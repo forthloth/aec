@@ -19,6 +19,7 @@ cd aec
 3、Evaluate the encoder for the challenge with
 
 ```cmd
+export HF_ENDPOINT=https://hf-mirror.com
 accelerate launch -m xares_llm.run quen_whisper.py task1 task1
 ```
 
@@ -42,5 +43,6 @@ The Evaluation results:
 | eval_voxceleb1            | 0.974              | 0.762              | 0.985 |
 | eval_voxlingua33          | 0.311              | 0.835              | 0.968 |
 | Overall                   | 0.614              | 0.652              | 0.824 |
+
 
 
