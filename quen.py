@@ -83,7 +83,7 @@ class QwenEncoder(nn.Module):
         # Load full model on CPU (Trainer will move our module later).
         # parent_path = pathlib.Path(quen_local)
         # path = [d for d in parent_path.iterdir() if d.is_dir()]
-        if os.path.exists(quen_local):
+        if quen_local is not None and os.path.exists(quen_local):
                 qwen_full = Qwen2AudioForConditionalGeneration.from_pretrained(
                     quen_local,
                     trust_remote_code=True,
