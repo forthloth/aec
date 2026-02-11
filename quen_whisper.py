@@ -172,10 +172,9 @@ class quen_whisper_Encoder(torch.nn.Module):
 if __name__ == "__main__":
 
     import sys
-    sys.path.append("/home/bms34/data/lmd/xares-llm-main")
+
     import os
-    #set cuda 6
-    os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+
     # from .quen import QwenEncoder as quen
     # from .whisper_base import Encoder as whisper
     from example.Quen2_whisper_silence.quen import QwenEncoder as quen
