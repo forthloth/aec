@@ -20,6 +20,8 @@ cd aec
 3、Evaluate the encoder for the challenge with
 
 ```cmd
+export HF_ENDPOINT=https://hf-mirror.com
 accelerate launch -m xares_llm.run quen_whisper.py task1 task1
 ```
+
 
