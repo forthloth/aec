@@ -6,7 +6,6 @@
 conda create -n aec python=3.10.2
 conda activate aec
 pip install torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 --index-url https://download.pytorch.org/whl/cu118
-
 pip install git+https://github.com/xiaomi-research/xares-llm
 ```
 
@@ -43,4 +42,5 @@ The Evaluation results:
 | eval_voxceleb1            | 0.974              | 0.762              | 0.985 |
 | eval_voxlingua33          | 0.311              | 0.835              | 0.968 |
 | Overall                   | 0.614              | 0.652              | 0.824 |
+
 
