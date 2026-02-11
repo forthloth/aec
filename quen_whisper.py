@@ -2,8 +2,8 @@
 # from example.Quen2_whisper.whisper_base import Encoder
 import torch
 import math
-from .quen import QwenEncoder as quen
-from .whisper_base import Encoder as whisper
+from quen import QwenEncoder as quen
+from whisper_base import Encoder as whisper
 
 import torch
 import torch.nn.functional as F
