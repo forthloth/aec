@@ -177,8 +177,8 @@ if __name__ == "__main__":
 
     # from .quen import QwenEncoder as quen
     # from .whisper_base import Encoder as whisper
-    from example.Quen2_whisper_silence.quen import QwenEncoder as quen
-    from example.Quen2_whisper_silence.whisper_base import Encoder as whisper
+    from quen import QwenEncoder as quen
+    from whisper_base import Encoder as whisper
     import torch
     enc = quen_whisper_Encoder()
 
