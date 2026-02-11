@@ -21,7 +21,7 @@ class Encoder(torch.nn.Module):
         # 检查本地是否已有模型文件
         #model_path = os.path.join(local_dir, model_name.replace("/", "--"))
         
-        if self._check_local_model_exists(self.local_dir):
+        if self.local_dir is not None and self._check_local_model_exists(self.local_dir):
             print(f"从本地加载模型: {self.local_dir}")
             self.processor = WhisperProcessor.from_pretrained(self.local_dir)
             self.model = WhisperModel.from_pretrained(self.local_dir).get_encoder()
