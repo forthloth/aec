@@ -6,6 +6,7 @@
 conda create -n aec python=3.10.2
 conda activate aec
 pip install torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 --index-url https://download.pytorch.org/whl/cu118
+
 pip install git+https://github.com/xiaomi-research/xares-llm
 ```
 
@@ -22,12 +23,43 @@ cd aec
 export HF_ENDPOINT=https://hf-mirror.com
 accelerate launch -m xares_llm.run quen_whisper.py task1 task1
 ```
+
+
+
 If your device doesn't support accelerate,try
-```cmd
+
+```
 export HF_ENDPOINT=https://hf-mirror.com
 python -m xares_llm.run quen_whisper.py task1 task1
 ```
+
 Instead.
+
+
+
+4、For the available trained encoder and llm,you can download link for train_task1_config folder:
+
+``` http
+https://drive.google.com/drive/folders/1_PBckMxfG4DHfrSk56sAPBQv4RTJsPa8?usp=drive_link
+```
+
+under the aec path,do as following:
+
+``` 
+mkdir experiments
+cd experiments
+```
+
+copy the downloaded train_task1_config folder under experiments path
+
+the return to the aec path and run
+
+``` 
+export HF_ENDPOINT=https://hf-mirror.com
+python -m xares_llm.run quen_whisper.py task1 task1
+```
+
+
 
 The Evaluation results:
 
@@ -49,7 +81,4 @@ The Evaluation results:
 | eval_voxceleb1            | 0.974              | 0.762              | 0.985 |
 | eval_voxlingua33          | 0.311              | 0.835              | 0.968 |
 | Overall                   | 0.614              | 0.652              | 0.824 |
-
-
-
 
