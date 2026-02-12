@@ -39,8 +39,8 @@ Instead.
 
 4、For the available trained encoder and llm,you can download link for train_task1_config folder:
 
-```
-https://drive.google.com/drive/folders/1_PBckMxfG4DHfrSk56sAPBQv4RTJsPa8?usp=drive_link
+``` 
+https://drive.google.com/drive/folders/1_PBckMxfG4DHfrSk56sAPBQv4RTJsPa8?usp=sharing
 ```
 
 under the aec path,do as following:
@@ -81,5 +81,4 @@ The Evaluation results:
 | eval_voxceleb1            | 0.974              | 0.762              | 0.985 |
 | eval_voxlingua33          | 0.311              | 0.835              | 0.968 |
 | Overall                   | 0.614              | 0.652              | 0.824 |
-
 
