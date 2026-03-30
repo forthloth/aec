@@ -1,6 +1,6 @@
 # WQ-Fusion
 
-## This is the official implementation of the paper WQ-Fusion for Interspeech 2026.
+## This is the official implementation of the paper WQ-Fusion for Interspeech 2026, the paper could be found at WQ-Fusion.pdf in the files.
 
 1、 To enable the use of this encoder,you should create a conda environment with the following cmd command:
 
