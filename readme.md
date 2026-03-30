@@ -1,4 +1,4 @@
-# The commit for The Interspeech 2026 Audio Encoder Capability Challenge from IASP Lab
+# WQ-Fusion
 
 1、 To enable the use of this encoder,you should create a conda environment with the following cmd command:
 
@@ -35,29 +35,6 @@ python -m xares_llm.run quen_whisper.py task1 task1
 
 Instead.
 
-
-
-4、For the available trained encoder and llm,you can download link for train_task1_config folder:
-
-``` 
-https://drive.google.com/drive/folders/1_PBckMxfG4DHfrSk56sAPBQv4RTJsPa8?usp=sharing
-```
-
-under the aec path,do as following:
-
-``` 
-mkdir experiments
-cd experiments
-```
-
-copy the downloaded train_task1_config folder under experiments path
-
-the return to the aec path and run
-
-``` 
-export HF_ENDPOINT=https://hf-mirror.com
-python -m xares_llm.run quen_whisper.py task1 task1
-```
 
 
 
