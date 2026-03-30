@@ -1,7 +1,7 @@
 import torch
 import os
 from transformers import WhisperModel, WhisperProcessor
-import torch.nn.functional as F
+
 def length_to_mask(lengths: torch.Tensor, max_len: int | None = None) -> torch.Tensor:
     if max_len is None:
         max_len = lengths.amax()
@@ -10,21 +10,21 @@ def length_to_mask(lengths: torch.Tensor, max_len: int | None = None) -> torch.T
     return mask.long()
 
 class Encoder(torch.nn.Module):
-    def __init__(self, model_name="openai/whisper-large", local_dir=None):
+    def __init__(self, model_name="openai/whisper-large", local_dir="/asdata/lmd/whisper_large"):
         super().__init__()
         self.local_dir = local_dir
         self.model_name = model_name
         
         # 创建本地目录
-        # os.makedirs(local_dir, exist_ok=True)
-        # model_path = self.local_dir
+        os.makedirs(local_dir, exist_ok=True)
+        model_path = self.local_dir
         # 检查本地是否已有模型文件
         #model_path = os.path.join(local_dir, model_name.replace("/", "--"))
         
-        if self.local_dir is not None and self._check_local_model_exists(self.local_dir):
-            print(f"从本地加载模型: {self.local_dir}")
-            self.processor = WhisperProcessor.from_pretrained(self.local_dir)
-            self.model = WhisperModel.from_pretrained(self.local_dir).get_encoder()
+        if self._check_local_model_exists(model_path):
+            print(f"从本地加载模型: {model_path}")
+            self.processor = WhisperProcessor.from_pretrained(model_path)
+            self.model = WhisperModel.from_pretrained(model_path).get_encoder()
         else:
             print(f"从网络下载模型: {model_name}")
             # 从网络下载
@@ -32,7 +32,7 @@ class Encoder(torch.nn.Module):
             self.model = WhisperModel.from_pretrained(model_name).get_encoder()
             
             # 保存到本地
-            # self._save_model_to_local(self.local_dir)
+            self._save_model_to_local(model_path)
         
         self.output_dim = self.model.config.d_model
 
@@ -68,7 +68,7 @@ class Encoder(torch.nn.Module):
         
         print("模型保存完成")
 
-    def forward(self, audio: torch.Tensor, audio_attention_mask=None,audio_valid_mask = None) -> tuple[torch.Tensor, torch.Tensor]:
+    def forward(self, audio: torch.Tensor, audio_attention_mask=None) -> tuple[torch.Tensor, torch.Tensor]:
         # Since feature extraction is on cpu this is super slow
         assert isinstance(audio, torch.Tensor)
         audio = audio.cpu().numpy()
@@ -84,35 +84,11 @@ class Encoder(torch.nn.Module):
             audio_lens = torch.tensor([a.shape[-1] for a in audio_list])
         else:
             audio_lens = audio_attention_mask.sum(-1)
-
         mel_lengths = audio_lens // self.processor.feature_extractor.hop_length
         feature_lengths = (mel_lengths - 1) // 2 + 1
         feature_lengths = (feature_lengths - 1) // 2 + 1
         trim_length = feature_lengths.amax()
         attention_mask = length_to_mask(feature_lengths)
-
-        if audio_valid_mask is not None:
-            audio_attention_mask=attention_mask
-        #
-        mask_float = audio_valid_mask.float().unsqueeze(1)
-        
-        # 2. 使用平均池化下采样 4 倍
-        # kernel_size=4, stride=4 保证了无重叠的 4 倍压缩
-        # ceil_mode=False (默认) 会丢弃末尾不足 4 个采样点的部分，与特征提取器行为对齐
-        downsampled_float = F.avg_pool1d(mask_float, kernel_size=self.processor.feature_extractor.hop_length*4, stride=self.processor.feature_extractor.hop_length*4)
-        
-        # 3. 阈值判断并转回 bool
-        # 如果 4 个点中至少有 3 个点有效 (即 > 0.5)，则该特征帧设为 True
-        # 你也可以根据需求调整阈值，例如只要有 1 个点有效就设为 True ( > 0 )
-        downsampled_mask = (downsampled_float.squeeze(1) > 0.5)
-        if downsampled_mask.size(1)<trim_length:#append 1
-            downsampled_mask=torch.cat((downsampled_mask, torch.ones(downsampled_mask.size(0), trim_length - downsampled_mask.size(1), device=downsampled_mask.device, dtype=torch.bool)), dim=1)
-        downsampled_mask=downsampled_mask[:,:trim_length]
-
-        attention_mask = attention_mask & downsampled_mask
-
-        #
-
 
         features = self.processor(audio_list, sampling_rate=16000, return_tensors="pt").to(self.model.device)
         output = self.model(**features).last_hidden_state
@@ -122,11 +98,9 @@ class Encoder(torch.nn.Module):
 if __name__ == "__main__":
     # 第一次运行：从网络下载并保存到本地
     enc = Encoder(local_dir="/asdata/lmd/whisper_large")
-    valid_mask=torch.tensor([[1]*2000, [1]*400 + [0]*1600 ,  [0]*2000, [1]*1300 + [0]*700])
-    q, p = enc(torch.randn(4, 2000), length_to_mask(torch.tensor([2000, 2000,2000, 2000])),valid_mask)
+    q, p = enc(torch.randn(4, 160000), length_to_mask(torch.tensor([160000, 80000, 40000, 20000])))
     print(q.shape, enc.output_dim)
     print(p.shape)
-    print(p)
     
 # import torch
 # from transformers import WhisperModel, WhisperProcessor

@@ -45,7 +45,7 @@ class QwenEncoder(nn.Module):
 
     def __init__(
         self,
-        qwen_name: str = "Qwen/Qwen2-Audio-7B-Instruct",quen_local=None,
+        qwen_name: str = "Qwen/Qwen2-Audio-7B-Instruct",quen_local="/asdata/lmd/aec/qwen",
         target_hz: int = 25,
         dasheng_pad_s: float = 10.0,
         qwen_pad_s: float = 30.0,
@@ -83,7 +83,7 @@ class QwenEncoder(nn.Module):
         # Load full model on CPU (Trainer will move our module later).
         # parent_path = pathlib.Path(quen_local)
         # path = [d for d in parent_path.iterdir() if d.is_dir()]
-        if quen_local is not None and os.path.exists(quen_local):
+        if os.path.exists(quen_local):
                 qwen_full = Qwen2AudioForConditionalGeneration.from_pretrained(
                     quen_local,
                     trust_remote_code=True,
@@ -100,7 +100,7 @@ class QwenEncoder(nn.Module):
                 low_cpu_mem_usage=True,
                 device_map=None,
             )
-            # qwen_full.save_pretrained(quen_local)
+            qwen_full.save_pretrained(quen_local)
 
         # Keep only audio tower
         if not hasattr(qwen_full, "audio_tower"):
